@@ -4,7 +4,8 @@
 - An attempt to optimise team construction and player transfers in fantasy premier league (FPL) through data analysis and predictive modelling. 
 - Model takes a player's rolling average FPL points from previous 5 games and forecasts his upcoming 5-game performance in terms of FPL points. 
 
-## 📊 Data Sources 
+## 📊 Data Source 
+- Github repo: [Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
 
 ## 📈 Modelling 
 ### Baseline 
