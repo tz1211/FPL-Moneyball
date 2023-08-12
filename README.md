@@ -9,7 +9,13 @@
 
 ## 📈 Modelling 
 ### Baseline 
-- Taking a player's mean FPL points from the previous 5 games as an indicator for his next 5-game performance. 
+- Taking a player's mean FPL points from the previous 10 games as an indicator for his next 5-game performance.
+- Baseline statistics:
+    - rmse: 1.256293266288406
+    - r2: 0.3992381036273135
+
+![image](https://github.com/tz1211/FPL-Moneyball/assets/114442618/de586100-91e4-4cfa-b1fe-078177f2f11e)
+
 
 ### ML Model 
 #### Training Data
