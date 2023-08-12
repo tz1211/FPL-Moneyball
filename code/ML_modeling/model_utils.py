@@ -16,7 +16,7 @@ def pre_process_for_ML(df):
     return X_train, X_test, y_train, y_test
 
 
-def eval_model(model, X_test): 
+def eval_model(model, X_test, y_test): 
     y_pred = model.predict(X_test)
 
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
