@@ -5,7 +5,8 @@
 - Model takes a player's rolling average FPL points from previous 5 games and forecasts his upcoming 5-game performance in terms of FPL points. 
 
 ## 📊 Data Source 
-- Github repo: [Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
+- Raw weekly FPL data: [Fantasy-Premier-League github repo](https://github.com/vaastav/Fantasy-Premier-League)
+- Weekly team standing: [worldfootball.net](https://www.worldfootball.net/schedule/eng-premier-league-2022-2023-spieltag/)
 
 ## 📈 Modelling 
 ### Baseline 
