@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import requests 
 from bs4 import BeautifulSoup 
+from ortools.linear_solver import pywraplp 
 
 def scrape_standing(season, gw): 
     url = f"https://www.worldfootball.net/schedule/eng-premier-league-{season}-spieltag/{gw}/" 
@@ -74,3 +75,39 @@ def get_sched_strength(team, current_gw, df_fixtures, df_standing):
     avg_standing = df_standing_opp["Standing"].mean() 
 
     return avg_standing 
+
+
+def knapsack_fpl_xi(df_players, budget, fwd_count, mid_count, def_count, gk_count):
+    solver = pywraplp.Solver.CreateSolver('SCIP')
+
+    if not solver:
+        return []
+
+    num_players = len(df_players)
+    costs = df_players["now_cost"].to_list()
+    points = df_players["xP"].to_list()
+    positions = df_players["position"].to_list()
+
+    selected = [solver.IntVar(0, 1, f"player_{i}") for i in range(num_players)]
+
+    # Budget constraint: sum(costs * selected) <= budget
+    solver.Add(solver.Sum(costs[i] * selected[i] for i in range(num_players)) <= budget)
+
+    # Position constraints
+    positions_to_count = {"FWD": fwd_count, "MID": mid_count, "DEF": def_count, "GK": gk_count}
+    for pos, count in positions_to_count.items():
+        position_indices = [i for i, p in enumerate(positions) if p == pos]
+        solver.Add(solver.Sum(selected[i] for i in position_indices) == count)
+
+    # Objective function: maximize total points
+    solver.Maximize(solver.Sum(points[i] * selected[i] for i in range(num_players)))
+
+    status = solver.Solve()
+
+    if status != pywraplp.Solver.OPTIMAL:
+        return []
+
+    selected_indices = [i for i in range(num_players) if selected[i].solution_value() > 0.5]
+    df_selected = df_players[df_players.index.isin(selected_indices)]
+
+    return df_selected
