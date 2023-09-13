@@ -50,16 +50,27 @@ def get_team_standing(season, gw, id_mapping, df_teams):
     df_merged = pd.merge(df_teams, df_standing_mapped, on="id", how="left")
     df_standing_cleaned = df_merged[["GW", "name", "Standing"]]
     try: 
-        df_standing_cleaned["Standing"].astype("int")
+        df_standing_cleaned["Standing"] = df_standing_cleaned["Standing"].astype("int")
     except ValueError: 
-        df_standing_cleaned["Standing"].astype("float")
+        df_standing_cleaned["Standing"] = df_standing_cleaned["Standing"].astype("float")
 
     return df_standing_cleaned
 
 
+def get_5_game_team_standing(team, current_gw, df_standing): 
+    # determine current 5 gw period
+    current_5 = range(current_gw-5, current_gw) 
+    df_standing_current_5 = df_standing[(df_standing["name"] == team) & (df_standing["GW"].isin(current_5))]
+    
+    # calculate avg team standing 
+    team_standing = df_standing_current_5["Standing"].mean() 
+
+    return team_standing 
+
+
 def get_sched_strength(team, current_gw, df_fixtures, df_standing): 
     # determine next 5 gw 
-    next_5 = range(current_gw+1, current_gw+6) 
+    next_5 = range(current_gw, current_gw+5) 
     df_fixtures_next_5 = df_fixtures[df_fixtures["GW"].isin(next_5)]
 
     # determine opponents 
@@ -70,7 +81,7 @@ def get_sched_strength(team, current_gw, df_fixtures, df_standing):
     if current_gw == 0: 
         df_standing_current = df_standing[df_standing["GW"] == 38] # use standing from the end of last season 
     else: 
-        df_standing_current = df_standing[df_standing["GW"] == current_gw] # use standing from current gw (avoid data leakage)
+        df_standing_current = df_standing[df_standing["GW"] == current_gw-1] # use standing from current gw (avoid data leakage)
     df_standing_opp = df_standing_current[df_standing_current["name"].isin(opp_list)] 
     avg_standing = df_standing_opp["Standing"].mean() 
 
